@@ -12,13 +12,13 @@ Proyect: Movie Reviews
 user: dodo
 pssw: n...a
 Connection String:
-mongodb+srv://dodo:n990711a@cluster0.bdvpcti.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+mongodb+srv://dodo:<n990711a>@cluster0.bdvpcti.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 Proyect: MERN
 user: Dodo
 pssw: BN0qQ8usLuuSsWrB
 Connection String:
-mongodb+srv://Dodo:BN0qQ8usLuuSsWrB@cluster0.gqhobbr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+mongodb+srv://Dodo:<BN0qQ8usLuuSsWrB>@cluster0.gqhobbr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 }
 
