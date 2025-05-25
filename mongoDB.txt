@@ -1,0 +1,370 @@
+MongoDB
+
+Records in a MongoDB database are called documents, 
+and the field values may include numbers, strings, 
+booleans, arrays, or even nested documents
+
+Collection => Table; Document => Record
+
+Mondo DB Atlas
+{
+Proyect: Movie Reviews
+user: dodo
+pssw: n...a
+Connection String:
+mongodb+srv://dodo:n990711a@cluster0.bdvpcti.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+Proyect: MERN
+user: Dodo
+pssw: BN0qQ8usLuuSsWrB
+Connection String:
+mongodb+srv://Dodo:BN0qQ8usLuuSsWrB@cluster0.gqhobbr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+}
+
+MongoDB Shell CMD
+{
+mongosh --version
+
+>>use mongoDB Shell
+mongosh "mongodb+srv://cluster0.bdvpcti.mongodb.net/" --apiVersion 1 --username dodo
+pssw: n...a
+
+>list databases
+db
+
+>To see all available databases, in your terminal
+show dbs
+
+>Change and/or Create DB
+use <db_name>
+
+>Create Collection
+db.createCollection("posts")
+
+>Create a collection during the insert process
+db.posts.insertOne(object)
+
+>> .findOne() .find() .insertOne() .insertMany() .updateOne() .updateMany() 
+>> .deleteOne() .deleteMany() .aggregate()
+
+	>>Insert<<
+>To insert a single document
+db.posts.insertOne({
+  title: "Post Title 1",
+  body: "Body of post.",
+  category: "News",
+  likes: 1,
+  tags: ["news", "events"],
+  date: Date()
+})
+
+>To insert multiple documents at once
+db.posts.insertMany([  
+  {
+    title: "Post Title 2",
+    body: "Body of post.",
+    category: "Event",
+    likes: 2,
+    tags: ["news", "events"],
+    date: Date()
+  },
+  {
+    title: "Post Title 3",
+    body: "Body of post.",
+    category: "Technology",
+    likes: 3,
+    tags: ["news", "events"],
+    date: Date()
+  },
+  {
+    title: "Post Title 4",
+    body: "Body of post.",
+    category: "Event",
+    likes: 4,
+    tags: ["news", "events"],
+    date: Date()
+  }
+])
+
+	>>Find<<
+Both find methods accept a second parameter called projection.
+This parameter is an object that describes which fields to include in the results
+We use a 1 to include a field and 0 to exclude a field.
+
+>To select data from a collection in MongoDB, accepts query object, if empty returns all
+db.posts.find()
+db.posts.find( {category: "News"} )
+db.posts.find({}, {title: 1, date: 1})
+db.posts.find({}, {_id: 0, title: 1, date: 1})
+db.posts.find({}, {category: 0})
+error - db.posts.find({}, {title: 1, date: 0})
+
+>To select only one document, accepts a query object, If empty, return the first document it finds
+db.posts.findOne()
+
+	>>Update<<
+>Update the first document that is found matching the provided query
+db.posts.updateOne( { title: "Post Title 1" }, { $set: { likes: 2 } } ) 
+
+>Insert if not found
+db.posts.updateOne( 
+  { title: "Post Title 5" }, 
+  {
+    $set: 
+      {
+        title: "Post Title 5",
+        body: "Body of post.",
+        category: "Event",
+        likes: 5,
+        tags: ["news", "events"],
+        date: Date()
+      }
+  }, 
+  { upsert: true }
+)
+
+>Will update all documents that match the provided query
+>Increment likes on all documents by 1
+db.posts.updateMany({}, { $inc: { likes: 1 } })
+
+	>>Delete<<
+>Will delete the first document that matches the query provided
+db.posts.deleteOne({ title: "Post Title 5" })
+
+>Will delete all documents that match the query provided.
+db.posts.deleteMany({ category: "Technology" })
+
+	>>Query Operators
+Comparison
+The following operators can be used in queries to compare values:
+$eq: Values are equal
+$ne: Values are not equal
+$gt: Value is greater than another value
+$gte: Value is greater than or equal to another value
+$lt: Value is less than another value
+$lte: Value is less than or equal to another value
+$in: Value is matched within an array
+
+Logical
+The following operators can logically compare multiple queries.
+$and: Returns documents where both queries match
+$or: Returns documents where either query matches
+$nor: Returns documents where both queries fail to match
+$not: Returns documents where the query does not match
+
+Evaluation
+The following operators assist in evaluating documents.
+$regex: Allows the use of regular expressions when evaluating field values
+$text: Performs a text search
+$where: Uses a JavaScript expression to match documents
+
+	>>Update operators
+Fields
+The following operators can be used to update fields:
+$currentDate: Sets the field value to the current date
+$inc: Increments the field value
+$rename: Renames the field
+$set: Sets the value of a field
+$unset: Removes the field from the document
+
+Array
+The following operators assist with updating arrays.
+$addToSet: Adds distinct elements to an array
+$pop: Removes the first or last element of an array
+$pull: Removes all elements from an array that match the query
+$push: Adds an element to an array
+
+	>>Aggregation Pipelines
+db.posts.aggregate([
+  // Stage 1: Only find documents that have more than 1 like
+  {
+    $match: { likes: { $gt: 1 } }
+  },
+  // Stage 2: Group documents by category and sum each categories likes
+  {
+    $group: { _id: "$category", totalLikes: { $sum: "$likes" } }
+  }
+])
+
+>>Aggregation $group
+db.listingsAndReviews.aggregate(
+    [ { $group : { _id : "$property_type" } } ]
+)
+
+>>Aggregation $limit
+db.movies.aggregate([ { $limit: 1 } ])
+
+>>Aggregation $project
+db.restaurants.aggregate([
+  {
+    $project: {
+      "name": 1,
+      "cuisine": 1,
+      "address": 1
+    }
+  },
+  {
+    $limit: 5
+  }
+])
+
+>>Aggregation $sort
+	1 is ascending and -1 is descending
+db.listingsAndReviews.aggregate([ 
+  { 
+    $sort: { "accommodates": -1 } 
+  },
+  {
+    $project: {
+      "name": 1,
+      "accommodates": 1
+    }
+  },
+  {
+    $limit: 5
+  }
+])
+
+>>Aggregation $match
+db.listingsAndReviews.aggregate([ 
+  { $match : { property_type : "House" } },
+  { $limit: 2 },
+  { $project: {
+    "name": 1,
+    "bedrooms": 1,
+    "price": 1
+  }}
+])
+
+>>Aggregation $addFields
+db.restaurants.aggregate([
+  {
+    $addFields: {
+      avgGrade: { $avg: "$grades.score" }
+    }
+  },
+  {
+    $project: {
+      "name": 1,
+      "avgGrade": 1
+    }
+  },
+  {
+    $limit: 5
+  }
+])
+
+>>Aggregation $count
+db.restaurants.aggregate([
+  {
+    $match: { "cuisine": "Chinese" }
+  },
+  {
+    $count: "totalChinese"
+  }
+])
+Print: [ { totalChinese: 2418 } ]
+
+>>Aggregation $lookup
+db.comments.aggregate([
+  {
+    $lookup: {
+      from: "movies",
+      localField: "movie_id",
+      foreignField: "_id",
+      as: "movie_details",
+    },
+  },
+  {
+    $limit: 2
+  }
+])
+
+$lookup: {
+  from: "movies",         // Target collection to join (like a SQL JOIN)
+  localField: "movie_id", // Field in `comments` collection
+  foreignField: "_id",    // Field in `movies` collection to match with
+  as: "movie_details"     // Name of the new array field to store the joined movie info
+}
+
+>>Aggregation $out
+>This aggregation stage writes the returned documents 
+>from the aggregation pipeline to a collection.
+db.listingsAndReviews.aggregate([
+  {
+    $group: {
+      _id: "$property_type",
+      properties: {
+        $push: {
+          name: "$name",
+          accommodates: "$accommodates",
+          price: "$price",
+        },
+      },
+    },
+  },
+  { $out: "properties_by_type" },
+])
+>will create a new collection called properties_by_type
+	
+	>>Indexing & Search 
+db.movies.aggregate([
+  {
+    $search: {
+      index: "index", 
+      text: {
+        query: "star wars",
+        path: "title"
+      },
+    },
+  },
+  {
+    $project: {
+      title: 1,
+      year: 1,
+    }
+  }
+])
+
+	>>Schema Validation
+db.createCollection("posts", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: [ "title", "body" ],
+      properties: {
+        title: {
+          bsonType: "string",
+          description: "Title of post - Required."
+        },
+        body: {
+          bsonType: "string",
+          description: "Body of post - Required."
+        },
+        category: {
+          bsonType: "string",
+          description: "Category of post - Optional."
+        },
+        likes: {
+          bsonType: "int",
+          description: "Post like count. Must be an integer - Optional."
+        },
+        tags: {
+          bsonType: ["string"],
+          description: "Must be an array of strings - Optional."
+        },
+        date: {
+          bsonType: "date",
+          description: "Must be a date - Optional."
+        }
+      }
+    }
+  }
+})
+
+
+}
+
+
+
